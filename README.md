@@ -28,9 +28,9 @@ docker-compose up -d
 
 ## folder설명
 
-현재 git folder : airflow 실행관련script
-./현재 git folder/../airflow-dags/ : 현재폴더와 같은 level에 airflow-dags 폴더에 dag파일 구성
-./현재 git folder/../airflow-log/ : 현재폴더와 같은 level인 airflow-log 에 log적재
+- 현재 git folder : airflow 실행관련script
+- ./현재 git folder/../airflow-dags/ : 현재폴더와 같은 level에 airflow-dags 폴더에 dag파일 구성
+- ./현재 git folder/../airflow-log/ : 현재폴더와 같은 level인 airflow-log 에 log적재
 
 ## 파일 설명
 
