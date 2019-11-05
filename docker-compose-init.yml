@@ -1,0 +1,63 @@
+version: '3'
+
+# Run as
+# docker-compose build; docker-compose up -d
+# Check with
+# docker ps
+# Then check the logs with
+# docker logs --tail 50 $container_id
+# docker-compose images
+# docker-compose logs --tail 20 repo_name
+        #  MYSQL_USER: $MYSQLID
+        #          #  MYSQL_PASSWORD: $MYSQLPASSWD
+        #                  #  MYSQL_DATABASE: airflow
+        #
+services:
+    airflow_mysql_db:
+        hostname: airflow_mysql_db
+        image: mysql:5.7
+        environment:   # Set up postgres database name and password
+           MYSQL_USER: ${MYSQLID}
+           MYSQL_PASSWORD: ${MYSQLPASSWD}
+           MYSQL_ROOT_PASSWORD: $MYSQLPASSWD
+           TZ: Asia/Seoul
+        ports:    # Set up ports exposed for other containers to connect to
+          - 3306:3306
+        volumes:
+            - ./mysql-initdb.sql:/docker-entrypoint-initdb.d/mysql-initdb.sql
+            - ./myconf.cnf:/etc/mysql/conf.d/myconf.cnf
+            - ./data/mysql:/var/lib/mysql
+        networks:
+          - app-tier
+
+    # In order to build the image run
+    # It needs to be retagged to upload to quay
+    # docker-compose build --force-rm
+    # docker tag sequence_automation_airflow quay.io/nyuad_cgsb/sequence_automation_airflow:latest
+    airflow_init_db:
+        image: apache/airflow
+        # build:
+        #     context: .
+        #     dockerfile: Dockerfile
+        environment:
+            MYSQLID: $MYSQLID
+            MYSQLPASSWD: $MYSQLPASSWD
+            AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
+            AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
+            AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+        depends_on:
+            - airflow_mysql_db
+        links:
+            - airflow_mysql_db
+        # command: > #["bash","-c","date","bash","-c","sleep 2","bash","-c", "date"]
+            # "bash -c date && sleep 2 && date"
+        volumes:
+            - ./scripts:/home/airflow/scripts
+            - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            - ./entrypoint_initdb.sh:/entrypoint.sh
+        networks:
+          - app-tier
+
+networks:
+  app-tier:
+    driver: bridge

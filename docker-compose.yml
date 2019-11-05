@@ -1,0 +1,118 @@
+version: '3'
+
+# Run as
+# docker-compose build; docker-compose up -d
+# Check with
+# docker ps
+# Then check the logs with
+# docker logs --tail 50 $container_id
+# docker-compose images
+# docker-compose logs --tail 20 repo_name
+
+services:
+    # redis, used by the flask app to queue up jobs whee
+    airflow_redis_queue:
+        hostname: airflow_redis_queue
+        image: redis:latest
+        # environment:
+        # ports:
+        #    - 6379:6379
+        networks:
+          - app-tier
+        # volumes:
+        #   - /var/run/docker.sock:/var/run/docker.sock
+
+    airflow_mysql_db:
+        hostname: airflow_mysql_db
+        image: mysql:5.7
+        environment:   # Set up postgres database name and password
+          MYSQL_ROOT_PASSWORD: $MYSQLPASSWD
+          TZ: Asia/Seoul
+        ports:    # Set up ports exposed for other containers to connect to
+          - 3306:3306
+        volumes:
+            # - ./mysql-initdb.sql:/docker-entrypoint-initdb.d/mysql-initdb.sql
+            - ./myconf.cnf:/etc/mysql/conf.d/myconf.cnf
+            - ./data/mysql:/var/lib/mysql
+        networks:
+          - app-tier
+
+    airflow_scheduler:
+        image: apache/airflow
+        depends_on:
+            - airflow_redis_queue
+            - airflow_mysql_db
+        links:
+            - airflow_redis_queue
+            - airflow_mysql_db
+        environment:
+            C_FORCE_ROOT: 'true'
+            PYTHONPATH: /opt/dags/
+            AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
+            AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
+            AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+            AIRFLOW_DEPLOY_ENV: 'STAGE'
+        volumes:
+            - ./scripts:/home/airflow/scripts
+            - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            - ./entrypoint_scheduler.sh:/entrypoint.sh
+            - ../airflow-dags:/opt/dags
+            - ../airflow-logs:/opt/logs
+        networks:
+          - app-tier
+
+    airflow_webserver:
+        image: apache/airflow
+        depends_on:
+            - airflow_redis_queue
+            - airflow_mysql_db
+        links:
+            - airflow_redis_queue
+            - airflow_mysql_db
+        environment:
+            C_FORCE_ROOT: 'true'
+            PYTHONPATH: /opt/dags/
+            AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
+            AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
+            AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+            AIRFLOW_DEPLOY_ENV: 'STAGE'
+        volumes:
+            - ./scripts:/home/airflow/scripts
+            - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            - ./entrypoint_webserver.sh:/entrypoint.sh
+            - ../airflow-dags:/opt/dags
+            - ../airflow-logs:/opt/logs
+        ports:
+            - "8080:8080"
+            - "5001:5000"
+        networks:
+          - app-tier
+
+    airflow_worker:
+        image: apache/airflow
+        depends_on:
+            - airflow_redis_queue
+            - airflow_mysql_db
+            - airflow_scheduler
+        links:
+            - airflow_redis_queue
+            - airflow_mysql_db
+        environment:
+            C_FORCE_ROOT: 'true'
+            PYTHONPATH: /opt/dags/
+            AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
+            AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
+            AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
+            AIRFLOW_DEPLOY_ENV: 'STAGE'
+        volumes:
+            - ./scripts:/home/airflow/scripts
+            - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            - ./entrypoint_worker.sh:/entrypoint.sh
+            - ../airflow-dags:/opt/dags
+            - ../airflow-logs:/opt/logs
+        networks:
+          - app-tier
+
+networks:
+  app-tier:
+    driver: bridge
