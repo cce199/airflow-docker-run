@@ -20,8 +20,17 @@ from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())
 ## airflow db init
 
 docker-compose -f docker-compose-init.yml
+table 생성안될경우 다시 실행(airflow init보다 db가 먼저올라와서 그러는데 다시 실행하면 해결됨)
 
 ## airflow run
+
+docker-compose up -d
+
+## folder설명
+
+현재 git folder : airflow 실행관련script
+./현재 git folder/../airflow-dags/ : 현재폴더와 같은 level에 airflow-dags 폴더에 dag파일 구성
+./현재 git folder/../airflow-log/ : 현재폴더와 같은 level인 airflow-log 에 log적재
 
 ## 파일 설명
 
