@@ -51,7 +51,7 @@ services:
             AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
             AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
             AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
-            AIRFLOW_DEPLOY_ENV: 'STAGE'
+            AIRFLOW_HOME: /usr/local/airflow
         volumes:
             - ./scripts:/home/airflow/scripts
             - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
@@ -75,7 +75,7 @@ services:
             AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
             AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
             AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
-            AIRFLOW_DEPLOY_ENV: 'STAGE'
+            AIRFLOW_HOME: /usr/local/airflow
         volumes:
             - ./scripts:/home/airflow/scripts
             - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
@@ -100,10 +100,10 @@ services:
         environment:
             C_FORCE_ROOT: 'true'
             PYTHONPATH: /opt/dags/
+            AIRFLOW_HOME: /usr/local/airflow
             AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
             AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
             AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
-            AIRFLOW_DEPLOY_ENV: 'STAGE'
         volumes:
             - ./scripts:/home/airflow/scripts
             - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
