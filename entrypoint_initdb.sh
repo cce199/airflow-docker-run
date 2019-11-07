@@ -21,6 +21,6 @@
 set -e
 
 echo Starting Apache Airflow with command:
-cmd="date && /home/airflow/scripts/wait-for-it.sh -p 3306 -h airflow_mysql_db -- airflow initdb && airflow users -c --username admin --password admin --role Admin --email admin@airflow.com --firstname admin --lastname admin"
+cmd="date && /home/airflow/scripts/wait-for-it.sh -p 3306 -h airflow_mysql_db -- airflow db init && airflow users create --username admin --password admin --role Admin --email admin@airflow.com --firstname admin --lastname admin"
 echo $cmd
 bash -c "$cmd"
