@@ -1,5 +1,18 @@
 # airflow-docker-run
 
+## folder설정
+
+folder<br>
+ ├ airflow-dags<br>
+ ├ airflow-logs<br>
+ ├ airflow-docker-run(현재git)<br>
+ └ airflow (git clone https://github.com/apache/airflow)
+
+## airflow docker build
+
+airflow폴더에서<br>
+docker build -t apache/airflow .
+
 ## .env에 환경변수지정
 
 내부에서 사용할 mysql에 id, password를 지정
