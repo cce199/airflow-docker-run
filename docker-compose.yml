@@ -46,7 +46,7 @@ services:
             - airflow_redis_queue
             - airflow_mysql_db
         environment:
-            C_FORCE_ROOT: 'true'
+            # C_FORCE_ROOT: 'true'
             PYTHONPATH: /opt/dags/
             AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
             AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
@@ -71,7 +71,7 @@ services:
             - airflow_redis_queue
             - airflow_mysql_db
         environment:
-            C_FORCE_ROOT: 'true'
+            # C_FORCE_ROOT: 'true'
             PYTHONPATH: /opt/dags/
             AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
             AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
@@ -100,7 +100,7 @@ services:
             - airflow_redis_queue
             - airflow_mysql_db
         environment:
-            C_FORCE_ROOT: 'true'
+            # C_FORCE_ROOT: 'true'
             PYTHONPATH: /opt/dags/
             AIRFLOW_HOME: /home/airflow
             AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
