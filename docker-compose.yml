@@ -51,10 +51,11 @@ services:
             AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
             AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
             AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
-            AIRFLOW_HOME: /usr/local/airflow
+            AIRFLOW_HOME: /home/airflow
         volumes:
             - ./scripts:/home/airflow/scripts
-            - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            # - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            - ./airflow-local.cfg:/home/airflow/airflow.cfg
             - ./entrypoint_scheduler.sh:/entrypoint.sh
             - ../airflow-dags:/opt/dags
             - ../airflow-logs:/opt/logs
@@ -75,10 +76,11 @@ services:
             AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
             AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
             AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
-            AIRFLOW_HOME: /usr/local/airflow
+            AIRFLOW_HOME: /home/airflow
         volumes:
             - ./scripts:/home/airflow/scripts
-            - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            # - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            - ./airflow-local.cfg:/home/airflow/airflow.cfg
             - ./entrypoint_webserver.sh:/entrypoint.sh
             - ../airflow-dags:/opt/dags
             - ../airflow-logs:/opt/logs
@@ -100,13 +102,14 @@ services:
         environment:
             C_FORCE_ROOT: 'true'
             PYTHONPATH: /opt/dags/
-            AIRFLOW_HOME: /usr/local/airflow
+            AIRFLOW_HOME: /home/airflow
             AIRFLOW__CORE__SQL_ALCHEMY_CONN: ${AIRFLOW__CORE__SQL_ALCHEMY_CONN}
             AIRFLOW__CELERY__RESULT_BACKEND: ${AIRFLOW__CELERY__RESULT_BACKEND}
             AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY}
         volumes:
             - ./scripts:/home/airflow/scripts
-            - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            # - ./airflow-local.cfg:/usr/local/airflow/airflow.cfg
+            - ./airflow-local.cfg:/home/airflow/airflow.cfg
             - ./entrypoint_worker.sh:/entrypoint.sh
             - ../airflow-dags:/opt/dags
             - ../airflow-logs:/opt/logs
